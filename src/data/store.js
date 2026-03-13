@@ -62,6 +62,39 @@ const store = {
       physician: 'Dr. Michael Chen',
       recordDate: '2024-01-05'
     }
+  ],
+
+  prescriptions: [
+    {
+      id: 'rx-001',
+      patientId: 'pat-001',
+      medicationName: 'Lisinopril',
+      dosage: '10mg',
+      frequency: 'once daily',
+      route: 'oral',
+      prescribedBy: 'Dr. Jane Smith',
+      prescribedDate: '2023-02-10',
+      startDate: '2023-02-11',
+      endDate: null,
+      refillsRemaining: 5,
+      status: 'active',
+      notes: 'Take in the morning. Monitor blood pressure weekly.'
+    },
+    {
+      id: 'rx-002',
+      patientId: 'pat-002',
+      medicationName: 'Metoprolol',
+      dosage: '25mg',
+      frequency: 'twice daily',
+      route: 'oral',
+      prescribedBy: 'Dr. Michael Chen',
+      prescribedDate: '2024-01-05',
+      startDate: '2024-01-06',
+      endDate: '2024-07-06',
+      refillsRemaining: 2,
+      status: 'active',
+      notes: 'Take with food. Do not stop abruptly.'
+    }
   ]
 };
 
