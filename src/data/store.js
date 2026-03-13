@@ -41,6 +41,27 @@ const store = {
       status: 'completed',
       reason: 'Follow-up on blood pressure medication'
     }
+  ],
+
+  medicalRecords: [
+    {
+      id: 'rec-001',
+      patientId: 'pat-001',
+      recordType: 'diagnosis',
+      title: 'Hypertension Diagnosis',
+      description: 'Patient diagnosed with stage 1 hypertension. Blood pressure recorded at 145/92 mmHg.',
+      physician: 'Dr. Jane Smith',
+      recordDate: '2023-02-10'
+    },
+    {
+      id: 'rec-002',
+      patientId: 'pat-002',
+      recordType: 'lab_result',
+      title: 'Complete Blood Count (CBC)',
+      description: 'CBC panel results — all values within normal range. Hemoglobin: 13.8 g/dL.',
+      physician: 'Dr. Michael Chen',
+      recordDate: '2024-01-05'
+    }
   ]
 };
 
