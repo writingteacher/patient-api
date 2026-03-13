@@ -1,0 +1,272 @@
+{
+  "info": {
+    "name": "Patient Management API",
+    "description": "A RESTful API for managing patients, appointments, medical records, and prescriptions.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://patient-api-vzzr.onrender.com/api/v1"
+    },
+    {
+      "key": "token",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "url": "{{baseUrl}}/auth/login",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Patients",
+      "item": [
+        {
+          "name": "List patients",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/patients"
+          }
+        },
+        {
+          "name": "Get patient by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/patients/pat-001"
+          }
+        },
+        {
+          "name": "Create patient",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/patients",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"firstName\": \"Maria\",\n  \"lastName\": \"Santos\",\n  \"dateOfBirth\": \"1985-07-22\",\n  \"gender\": \"female\",\n  \"email\": \"m.santos@email.com\",\n  \"phone\": \"555-0404\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update patient",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/patients/pat-001",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phone\": \"555-9999\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete patient",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/patients/pat-001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Appointments",
+      "item": [
+        {
+          "name": "List appointments",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/appointments"
+          }
+        },
+        {
+          "name": "Get appointment by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/appointments/appt-001"
+          }
+        },
+        {
+          "name": "Schedule appointment",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/appointments",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientId\": \"pat-001\",\n  \"physicianName\": \"Dr. Jane Smith\",\n  \"department\": \"Cardiology\",\n  \"appointmentDate\": \"2025-05-10\",\n  \"appointmentTime\": \"11:00\",\n  \"reason\": \"Follow-up consultation\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Cancel appointment",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/appointments/appt-001",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete appointment",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/appointments/appt-001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Medical Records",
+      "item": [
+        {
+          "name": "List medical records",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/medical-records"
+          }
+        },
+        {
+          "name": "Get medical record by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/medical-records/rec-001"
+          }
+        },
+        {
+          "name": "Create medical record",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/medical-records",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientId\": \"pat-001\",\n  \"recordType\": \"imaging\",\n  \"title\": \"Chest X-Ray\",\n  \"description\": \"No abnormalities detected.\",\n  \"physician\": \"Dr. Jane Smith\",\n  \"recordDate\": \"2025-04-15\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Update medical record",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/medical-records/rec-001",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Updated: Mild hypertension confirmed.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete medical record",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/medical-records/rec-001"
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prescriptions",
+      "item": [
+        {
+          "name": "List prescriptions",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/prescriptions"
+          }
+        },
+        {
+          "name": "Get prescription by ID",
+          "request": {
+            "method": "GET",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/prescriptions/rx-001"
+          }
+        },
+        {
+          "name": "Create prescription",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/prescriptions",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"patientId\": \"pat-001\",\n  \"medicationName\": \"Metformin\",\n  \"dosage\": \"500mg\",\n  \"frequency\": \"twice daily with meals\",\n  \"route\": \"oral\",\n  \"prescribedBy\": \"Dr. Jane Smith\",\n  \"prescribedDate\": \"2025-04-15\",\n  \"startDate\": \"2025-04-16\",\n  \"notes\": \"Monitor blood glucose levels.\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Cancel prescription",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token}}" },
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "url": "{{baseUrl}}/prescriptions/rx-001",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"cancelled\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Delete prescription",
+          "request": {
+            "method": "DELETE",
+            "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+            "url": "{{baseUrl}}/prescriptions/rx-001"
+          }
+        }
+      ]
+    }
+  ]
+}
