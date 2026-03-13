@@ -1,0 +1,522 @@
+openapi: 3.0.3
+info:
+  title: Patient Management API
+  description: A RESTful API for managing patients, appointments, medical records, and prescriptions.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api/v1
+    description: Local development
+
+tags:
+  - name: Auth
+    description: Authentication and token management
+  - name: Patients
+    description: Patient demographic information
+  - name: Appointments
+    description: Appointment scheduling and management
+  - name: Medical Records
+    description: Clinical records including diagnoses and lab results
+  - name: Prescriptions
+    description: Medication prescriptions and refill tracking
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: JWT token obtained from POST /auth/login
+
+  schemas:
+    Patient:
+      type: object
+      properties:
+        id:
+          type: string
+          example: pat-001
+        firstName:
+          type: string
+          example: Robert
+        lastName:
+          type: string
+          example: Johnson
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1978-04-12'
+        gender:
+          type: string
+          enum: [male, female, non_binary, prefer_not_to_say]
+          example: male
+        email:
+          type: string
+          example: r.johnson@email.com
+        phone:
+          type: string
+          example: 555-0101
+
+    PatientRequest:
+      type: object
+      required: [firstName, lastName, dateOfBirth, gender, email]
+      properties:
+        firstName:
+          type: string
+          example: Maria
+        lastName:
+          type: string
+          example: Santos
+        dateOfBirth:
+          type: string
+          format: date
+          example: '1985-07-22'
+        gender:
+          type: string
+          enum: [male, female, non_binary, prefer_not_to_say]
+          example: female
+        email:
+          type: string
+          example: m.santos@email.com
+        phone:
+          type: string
+          example: 555-0404
+
+security:
+  - bearerAuth: []
+
+paths:
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Log in and get a JWT
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username:
+                  type: string
+                  example: admin
+                password:
+                  type: string
+                  example: password123
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    properties:
+                      token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiJ9...
+                      expiresIn:
+                        type: integer
+                        example: 28800
+        '401':
+          description: Invalid credentials
+
+  /patients:
+    get:
+      tags: [Patients]
+      summary: List all patients
+      responses:
+        '200':
+          description: A list of patients
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Patient'
+        '401':
+          description: Missing or invalid token
+
+    post:
+      tags: [Patients]
+      summary: Create a new patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientRequest'
+      responses:
+        '201':
+          description: Patient created
+        '400':
+          description: Missing required fields
+        '401':
+          description: Missing or invalid token
+        '409':
+          description: Email already exists
+
+  /patients/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: pat-001
+    get:
+      tags: [Patients]
+      summary: Get a patient by ID
+      responses:
+        '200':
+          description: Patient found
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Patient not found
+    patch:
+      tags: [Patients]
+      summary: Update a patient
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatientRequest'
+      responses:
+        '200':
+          description: Patient updated
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Patient not found
+    delete:
+      tags: [Patients]
+      summary: Delete a patient
+      responses:
+        '200':
+          description: Patient deleted
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Patient not found
+  /appointments:
+    get:
+      tags: [Appointments]
+      summary: List all appointments
+      responses:
+        '200':
+          description: A list of appointments
+        '401':
+          description: Missing or invalid token
+
+    post:
+      tags: [Appointments]
+      summary: Schedule an appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [patientId, physicianName, appointmentDate, appointmentTime]
+              properties:
+                patientId:
+                  type: string
+                  example: pat-001
+                physicianName:
+                  type: string
+                  example: Dr. Jane Smith
+                appointmentDate:
+                  type: string
+                  format: date
+                  example: '2025-05-10'
+                appointmentTime:
+                  type: string
+                  example: '11:00'
+                reason:
+                  type: string
+                  example: Follow-up consultation
+      responses:
+        '201':
+          description: Appointment created
+        '400':
+          description: Missing required fields
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Patient not found
+
+  /appointments/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: appt-001
+    get:
+      tags: [Appointments]
+      summary: Get an appointment by ID
+      responses:
+        '200':
+          description: Appointment found
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Appointment not found
+    patch:
+      tags: [Appointments]
+      summary: Update an appointment
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [scheduled, completed, cancelled, no_show]
+                  example: cancelled
+      responses:
+        '200':
+          description: Appointment updated
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Appointment not found
+    delete:
+      tags: [Appointments]
+      summary: Delete an appointment
+      responses:
+        '200':
+          description: Appointment deleted
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Appointment not found
+
+  /medical-records:
+    get:
+      tags: [Medical Records]
+      summary: List all medical records
+      responses:
+        '200':
+          description: A list of medical records
+        '401':
+          description: Missing or invalid token
+    post:
+      tags: [Medical Records]
+      summary: Create a medical record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [patientId, recordType, title, physician, recordDate]
+              properties:
+                patientId:
+                  type: string
+                  example: pat-001
+                recordType:
+                  type: string
+                  enum: [diagnosis, lab_result, procedure, imaging, progress_note, referral, discharge_summary]
+                  example: imaging
+                title:
+                  type: string
+                  example: Chest X-Ray
+                description:
+                  type: string
+                  example: No abnormalities detected.
+                physician:
+                  type: string
+                  example: Dr. Jane Smith
+                recordDate:
+                  type: string
+                  format: date
+                  example: '2025-04-15'
+      responses:
+        '201':
+          description: Medical record created
+        '400':
+          description: Missing required fields or invalid record type
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Patient not found
+
+  /medical-records/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: rec-001
+    get:
+      tags: [Medical Records]
+      summary: Get a medical record by ID
+      responses:
+        '200':
+          description: Record found
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Record not found
+    patch:
+      tags: [Medical Records]
+      summary: Update a medical record
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        '200':
+          description: Record updated
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Record not found
+    delete:
+      tags: [Medical Records]
+      summary: Delete a medical record
+      responses:
+        '200':
+          description: Record deleted
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Record not found
+
+  /prescriptions:
+    get:
+      tags: [Prescriptions]
+      summary: List all prescriptions
+      responses:
+        '200':
+          description: A list of prescriptions
+        '401':
+          description: Missing or invalid token
+    post:
+      tags: [Prescriptions]
+      summary: Create a prescription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [patientId, medicationName, dosage, frequency, prescribedBy, prescribedDate, startDate]
+              properties:
+                patientId:
+                  type: string
+                  example: pat-001
+                medicationName:
+                  type: string
+                  example: Metformin
+                dosage:
+                  type: string
+                  example: 500mg
+                frequency:
+                  type: string
+                  example: twice daily with meals
+                route:
+                  type: string
+                  example: oral
+                prescribedBy:
+                  type: string
+                  example: Dr. Jane Smith
+                prescribedDate:
+                  type: string
+                  format: date
+                  example: '2025-04-15'
+                startDate:
+                  type: string
+                  format: date
+                  example: '2025-04-16'
+                notes:
+                  type: string
+                  example: Monitor blood glucose levels.
+      responses:
+        '201':
+          description: Prescription created
+        '400':
+          description: Missing required fields
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Patient not found
+
+  /prescriptions/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema:
+          type: string
+        example: rx-001
+    get:
+      tags: [Prescriptions]
+      summary: Get a prescription by ID
+      responses:
+        '200':
+          description: Prescription found
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Prescription not found
+    patch:
+      tags: [Prescriptions]
+      summary: Update a prescription
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [active, completed, cancelled, on_hold]
+                  example: cancelled
+                refillsRemaining:
+                  type: integer
+                  example: 3
+      responses:
+        '200':
+          description: Prescription updated
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Prescription not found
+    delete:
+      tags: [Prescriptions]
+      summary: Delete a prescription
+      responses:
+        '200':
+          description: Prescription deleted
+        '401':
+          description: Missing or invalid token
+        '404':
+          description: Prescription not found
