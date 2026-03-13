@@ -1,6 +1,7 @@
 const express = require('express');
 const authRoutes = require('./src/routes/auth');
 const patientRoutes = require('./src/routes/patients');
+const appointmentRoutes = require('./src/routes/appointments');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -17,6 +18,7 @@ app.get('/', (req, res) => {
 
 app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/patients', patientRoutes);
+app.use('/api/v1/appointments', appointmentRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
